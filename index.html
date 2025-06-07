@@ -6,12 +6,10 @@
     <title>تطبيق الأذكار والصلاة</title>
 
     <meta name="theme-color" content="#6155a6">
-    
     <link rel="manifest" href="manifest.json">
-    
     <link rel="icon" href="logoa.png" type="image/png">
-    
     <link rel="apple-touch-icon" href="logoa.png">
+    
     <style>
         :root {
             --primary-color: #6155a6;
@@ -117,7 +115,6 @@
             text-align: center;
         }
 
-        /* ... (بقية كود CSS لم يتغير) ... */
         .prayer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -148,43 +145,82 @@
             margin-top: 5px;
         }
 
-        .content-section { max-height: 70vh; overflow-y: auto; padding: 5px; }
+        .content-section {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 5px; 
+        }
         .content-section-inner { padding: 1rem; }
         .content-section::-webkit-scrollbar { width: 8px; }
         .content-section::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .content-section::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--accent-color), var(--primary-color)); border-radius: 10px; }
 
-        .sub-navigation { display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee; flex-wrap: wrap; }
-        .sub-nav-btn { background: #e8edff; border: 1px solid transparent; color: var(--primary-color); padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; font-family: var(--font-family); }
-        .sub-nav-btn.active, .sub-nav-btn:hover { background: var(--primary-color); color: var(--white-color); transform: translateY(-2px); box-shadow: 0 4px 10px var(--shadow-light); }
-        
+        .sub-navigation {
+            display: flex; justify-content: center; gap: 10px;
+            margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+        }
+        .sub-nav-btn {
+            background: #e8edff; border: 1px solid transparent; color: var(--primary-color);
+            padding: 10px 20px; border-radius: 20px; cursor: pointer;
+            font-weight: 500; transition: all 0.3s ease; font-family: var(--font-family);
+        }
+        .sub-nav-btn.active, .sub-nav-btn:hover {
+            background: var(--primary-color); color: var(--white-color);
+            transform: translateY(-2px); box-shadow: 0 4px 10px var(--shadow-light);
+        }
         .azkar-section, .deceased-section { display: none; }
         .azkar-section.active, .deceased-section.active { display: block; animation: fadeIn 0.5s; }
 
-        .dua-item, .azkar-item { background: var(--bg-color); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem; border-left: 5px solid var(--accent-color); transition: all 0.3s ease; }
+        .dua-item, .azkar-item {
+            background: var(--bg-color); border-radius: 15px; padding: 1.5rem;
+            margin-bottom: 1rem; border-left: 5px solid var(--accent-color);
+            transition: all 0.3s ease;
+        }
         .azkar-text, .dua-text { font-size: 1.2rem; line-height: 1.8; color: var(--text-color); }
         .azkar-source { font-size: 0.9rem; color: #888; margin-top: 1rem; font-style: italic; }
-        
-        #quran-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-        .surah-btn { display: flex; align-items: center; background: var(--bg-color); border: 1px solid #e0e0e0; padding: 1rem; border-radius: 10px; cursor: pointer; text-align: right; transition: all 0.3s ease; font-size: 1.1rem; font-weight: 500; font-family: var(--font-family); }
+
+        #quran-index {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .surah-btn {
+            display: flex; align-items: center; background: var(--bg-color); border: 1px solid #e0e0e0;
+            padding: 1rem; border-radius: 10px; cursor: pointer; text-align: right; transition: all 0.3s ease;
+            font-size: 1.1rem; font-weight: 500; font-family: var(--font-family);
+        }
         .surah-btn:hover { transform: translateY(-3px); border-color: var(--primary-color); }
-        .surah-btn .surah-number { background: var(--primary-color); color: var(--white-color); border-radius: 8px; padding: 5px 10px; font-weight: 700; margin-left: 1rem; }
+        .surah-btn .surah-number {
+            background: var(--primary-color); color: var(--white-color); border-radius: 8px;
+            padding: 5px 10px; font-weight: 700; margin-left: 1rem;
+        }
         .surah-details { flex-grow: 1; }
         .surah-details span { font-size: 0.85rem; color: #777; display: block; }
         #quran-viewer { display: none; }
         #surah-bismillah { font-family: 'Amiri', 'Times New Roman', serif; }
         .ayah { font-family: 'Amiri', 'Times New Roman', serif; font-size: 1.5rem; line-height: 2.5; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        .ayah-number { font-family: var(--font-family); background-color: var(--primary-color); color: var(--white-color); border-radius: 50%; width: 30px; height: 30px; display: inline-block; text-align: center; line-height: 30px; font-size: 1rem; margin-right: 10px; }
+        .ayah-number {
+            font-family: var(--font-family);
+            background-color: var(--primary-color); color: var(--white-color); border-radius: 50%;
+            width: 30px; height: 30px; display: inline-block; text-align: center; line-height: 30px;
+            font-size: 1rem; margin-right: 10px;
+        }
         .back-to-index-btn { margin-bottom: 1rem !important; }
+        
         .site-footer {
-    text-align: center;
-    padding-top: 2rem;
-    padding-bottom: 1rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-    margin-top: 1.5rem;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-}
+            text-align: center;
+            padding: 2rem 1rem 1rem 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            margin-top: 2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .site-footer strong {
+            font-weight: 700;
+            color: var(--white-color);
+        }
 
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
@@ -216,9 +252,6 @@
 
         <div id="home-page" class="page active">
             <div class="card">
-                <footer class="site-footer">
-    <p>&copy; 2025 - Made by Aws Afaneh</p>
-</footer>
                 <h2 class="card-title">مواقيت الصلاة</h2>
                 <div class="prayer-grid">
                     <div class="prayer-item"><div class="prayer-name">الفجر</div><div class="prayer-time" id="fajr-time">--:--</div></div>
@@ -325,16 +358,18 @@
              <div class="card">
                  <h2 class="card-title">أدعية عامة وشاملة</h2>
                  <div class="content-section">
-                    <div class="content-section-inner" id="general-duas-container">
-                        </div>
+                    <div class="content-section-inner" id="general-duas-container"></div>
                  </div>
             </div>
         </div>
 
+        <footer class="site-footer">
+            <p>&copy; <span id="current-year"></span> - Made with ❤️ by <strong>Aws Afaneh</strong></p>
+        </footer>
+
     </div>
 
     <script>
-        // ... (كل كود الجافاسكريبت الكامل والمصحح هنا) ...
         const deceasedDataMale = [
             "اللهم اغفر له وارحمه وعافه واعف عنه، وأكرم نزله ووسع مدخله، واغسله بالماء والثلج والبرد، ونقه من الخطايا كما ينقى الثوب الأبيض من الدنس.",
             "اللهم أبدله داراً خيراً من داره، وأهلاً خيراً من أهله، وزوجاً خيراً من زوجه، وأدخله الجنة وأعذه من عذاب القبر ومن عذاب النار.",
@@ -464,13 +499,13 @@
             { text: "وَقَالَ رَبُّكُمُ ادْعُونِي أَسْتَجِبْ لَكُمْ", surah: "(غافر: 60)" }
         ];
 
-        // --- CORE LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
             populateDeceasedDuas();
             populateGeneralDuas();
             getPrayerTimes();
             loadQuranIndex();
             displayVerseOfTheDay();
+            document.getElementById('current-year').textContent = new Date().getFullYear();
         });
         
         function populateDeceasedDuas() {
@@ -478,19 +513,12 @@
             const aishaContainer = document.getElementById('deceased-aisha');
             const basharContainer = document.getElementById('deceased-bashar');
             const basmaContainer = document.getElementById('deceased-basma');
-            
             let nimerHTML = `<h3 class="card-title" style="font-size: 1.5rem;">أدعية للمرحوم نمر محمد عفانه</h3>`;
-            deceasedDataMale.forEach(dua => {
-                nimerHTML += `<div class="dua-item"><div class="dua-text">${dua}</div></div>`;
-            });
+            deceasedDataMale.forEach(dua => { nimerHTML += `<div class="dua-item"><div class="dua-text">${dua}</div></div>`; });
             nimerContainer.innerHTML = nimerHTML;
-            
             let aishaHTML = `<h3 class="card-title" style="font-size: 1.5rem;">أدعية للمرحومة عائشة عواد الحمد</h3>`;
-            deceasedDataFemale.forEach(dua => {
-                aishaHTML += `<div class="dua-item"><div class="dua-text">${dua}</div></div>`;
-            });
+            deceasedDataFemale.forEach(dua => { aishaHTML += `<div class="dua-item"><div class="dua-text">${dua}</div></div>`; });
             aishaContainer.innerHTML = aishaHTML;
-
             basharContainer.innerHTML = nimerHTML.replace(/نمر محمد عفانه/g, 'بشار نمر عفانه');
             basmaContainer.innerHTML = aishaHTML.replace(/عائشة عواد الحمد/g, 'باسمة نمر عفانه');
         }
@@ -498,9 +526,7 @@
         function populateGeneralDuas() {
             const container = document.getElementById('general-duas-container');
             let html = '';
-            generalDuasData.forEach(dua => {
-                html += `<div class="dua-item"><div class="dua-text">${dua}</div></div>`;
-            });
+            generalDuasData.forEach(dua => { html += `<div class="dua-item"><div class="dua-text">${dua}</div></div>`; });
             container.innerHTML = html;
         }
 
