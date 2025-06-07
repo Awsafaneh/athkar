@@ -1,0 +1,21 @@
+{
+  "name": "تطبيق الأذكار والصلاة",
+  "short_name": "أذكار",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#6155a6",
+  "theme_color": "#6155a6",
+  "description": "تطبيق إسلامي شامل للأذكار ومواقيت الصلاة والقرآن الكريم.",
+  "icons": [
+    {
+      "src": "logoa.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logoa.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

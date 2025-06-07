@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق الأذكار والصلاة</title>
+
+    <meta name="theme-color" content="#6155a6">
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="icon" href="logoa.png" type="image/png">
+    
+    <link rel="apple-touch-icon" href="logoa.png">
     <style>
         :root {
             --primary-color: #6155a6;
@@ -31,10 +39,20 @@
         .container { max-width: 1100px; margin: 0 auto; padding: 1rem; }
         
         .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
             color: var(--white-color);
             margin-bottom: 2rem;
             animation: fadeInDown 1s ease-out;
+        }
+        .header-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .header h1 {
             font-size: clamp(2rem, 5vw, 2.8rem);
@@ -99,6 +117,7 @@
             text-align: center;
         }
 
+        /* ... (بقية كود CSS لم يتغير) ... */
         .prayer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -119,10 +138,7 @@
         .home-dashboard { text-align: center; }
         .home-dashboard h3 { font-size: 1.2rem; color: var(--secondary-color); margin-bottom: 1rem; }
         #next-prayer-countdown { font-size: 2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1.5rem; }
-        #verse-of-the-day {
-            border-top: 1px solid #eee;
-            padding-top: 1.5rem;
-        }
+        #verse-of-the-day { border-top: 1px solid #eee; padding-top: 1.5rem; }
         #verse-of-the-day .verse-text { font-size: 1.3rem; margin-bottom: 0.5rem; font-style: italic; }
         #verse-of-the-day .verse-surah { font-size: 1rem; color: #777; }
         #location-status { text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #888;}
@@ -132,67 +148,33 @@
             margin-top: 5px;
         }
 
-        .content-section {
-            max-height: 70vh;
-            overflow-y: auto;
-            padding: 5px; 
-        }
+        .content-section { max-height: 70vh; overflow-y: auto; padding: 5px; }
         .content-section-inner { padding: 1rem; }
         .content-section::-webkit-scrollbar { width: 8px; }
         .content-section::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .content-section::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--accent-color), var(--primary-color)); border-radius: 10px; }
 
-        .sub-navigation {
-            display: flex; justify-content: center; gap: 10px;
-            margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee;
-            flex-wrap: wrap;
-        }
-        .sub-nav-btn {
-            background: #e8edff; border: 1px solid transparent; color: var(--primary-color);
-            padding: 10px 20px; border-radius: 20px; cursor: pointer;
-            font-weight: 500; transition: all 0.3s ease; font-family: var(--font-family);
-        }
-        .sub-nav-btn.active, .sub-nav-btn:hover {
-            background: var(--primary-color); color: var(--white-color);
-            transform: translateY(-2px); box-shadow: 0 4px 10px var(--shadow-light);
-        }
+        .sub-navigation { display: flex; justify-content: center; gap: 10px; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee; flex-wrap: wrap; }
+        .sub-nav-btn { background: #e8edff; border: 1px solid transparent; color: var(--primary-color); padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 500; transition: all 0.3s ease; font-family: var(--font-family); }
+        .sub-nav-btn.active, .sub-nav-btn:hover { background: var(--primary-color); color: var(--white-color); transform: translateY(-2px); box-shadow: 0 4px 10px var(--shadow-light); }
+        
         .azkar-section, .deceased-section { display: none; }
         .azkar-section.active, .deceased-section.active { display: block; animation: fadeIn 0.5s; }
 
-        .dua-item, .azkar-item {
-            background: var(--bg-color); border-radius: 15px; padding: 1.5rem;
-            margin-bottom: 1rem; border-left: 5px solid var(--accent-color);
-            transition: all 0.3s ease;
-        }
+        .dua-item, .azkar-item { background: var(--bg-color); border-radius: 15px; padding: 1.5rem; margin-bottom: 1rem; border-left: 5px solid var(--accent-color); transition: all 0.3s ease; }
         .azkar-text, .dua-text { font-size: 1.2rem; line-height: 1.8; color: var(--text-color); }
         .azkar-source { font-size: 0.9rem; color: #888; margin-top: 1rem; font-style: italic; }
-
-        #quran-index {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1rem;
-        }
-        .surah-btn {
-            display: flex; align-items: center; background: var(--bg-color); border: 1px solid #e0e0e0;
-            padding: 1rem; border-radius: 10px; cursor: pointer; text-align: right; transition: all 0.3s ease;
-            font-size: 1.1rem; font-weight: 500; font-family: var(--font-family);
-        }
+        
+        #quran-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+        .surah-btn { display: flex; align-items: center; background: var(--bg-color); border: 1px solid #e0e0e0; padding: 1rem; border-radius: 10px; cursor: pointer; text-align: right; transition: all 0.3s ease; font-size: 1.1rem; font-weight: 500; font-family: var(--font-family); }
         .surah-btn:hover { transform: translateY(-3px); border-color: var(--primary-color); }
-        .surah-btn .surah-number {
-            background: var(--primary-color); color: var(--white-color); border-radius: 8px;
-            padding: 5px 10px; font-weight: 700; margin-left: 1rem;
-        }
+        .surah-btn .surah-number { background: var(--primary-color); color: var(--white-color); border-radius: 8px; padding: 5px 10px; font-weight: 700; margin-left: 1rem; }
         .surah-details { flex-grow: 1; }
         .surah-details span { font-size: 0.85rem; color: #777; display: block; }
         #quran-viewer { display: none; }
         #surah-bismillah { font-family: 'Amiri', 'Times New Roman', serif; }
         .ayah { font-family: 'Amiri', 'Times New Roman', serif; font-size: 1.5rem; line-height: 2.5; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        .ayah-number {
-            font-family: var(--font-family);
-            background-color: var(--primary-color); color: var(--white-color); border-radius: 50%;
-            width: 30px; height: 30px; display: inline-block; text-align: center; line-height: 30px;
-            font-size: 1rem; margin-right: 10px;
-        }
+        .ayah-number { font-family: var(--font-family); background-color: var(--primary-color); color: var(--white-color); border-radius: 50%; width: 30px; height: 30px; display: inline-block; text-align: center; line-height: 30px; font-size: 1rem; margin-right: 10px; }
         .back-to-index-btn { margin-bottom: 1rem !important; }
 
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
@@ -201,7 +183,7 @@
 </head>
 <body>
     <div class="container">
-        <svg width="0" height="0" style="position:absolute; bottom:0; left:0;">
+        <svg width="0" height="0" style="position:absolute;">
             <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></symbol>
             <symbol id="icon-quran" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></symbol>
             <symbol id="icon-beads" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z"/><path d="M10.29 3.86a2 2 0 1 0 2.83 2.83A2 2 0 0 0 10.29 3.86Z"/><path d="M14 10a2 2 0 1 0 4 0 2 2 0 0 0-4 0Z"/><path d="M18.14 16.71a2 2 0 1 0 2.83-2.83 2 2 0 0 0-2.83 2.83Z"/><path d="M6 18a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"/><path d="M10.29 20.14a2 2 0 1 0 2.83-2.83 2 2 0 0 0-2.83 2.83Z"/><path d="M12 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M6 12a2 2 0 1 0-4 0 2 2 0 0 0 4 0Z"/><path d="M18.14 6.71a2 2 0 1 0 2.83-2.83 2 2 0 0 0-2.83 2.83Z"/></symbol>
@@ -210,6 +192,7 @@
         </svg>
 
         <header class="header">
+            <img src="logoa.png" alt="شعار الموقع" class="header-logo">
             <h1>تطبيق الأذكار والصلاة</h1>
             <p>اللهم اعنا على ذكرك وشكرك وحسن عبادتك</p>
         </header>
@@ -335,10 +318,11 @@
                  </div>
             </div>
         </div>
+
     </div>
 
     <script>
-        // --- DATA (Complete) ---
+        // ... (كل كود الجافاسكريبت الكامل والمصحح هنا) ...
         const deceasedDataMale = [
             "اللهم اغفر له وارحمه وعافه واعف عنه، وأكرم نزله ووسع مدخله، واغسله بالماء والثلج والبرد، ونقه من الخطايا كما ينقى الثوب الأبيض من الدنس.",
             "اللهم أبدله داراً خيراً من داره، وأهلاً خيراً من أهله، وزوجاً خيراً من زوجه، وأدخله الجنة وأعذه من عذاب القبر ومن عذاب النار.",
@@ -495,7 +479,6 @@
             });
             aishaContainer.innerHTML = aishaHTML;
 
-            // Correctly populate the other two sections based on the generated HTML strings
             basharContainer.innerHTML = nimerHTML.replace(/نمر محمد عفانه/g, 'بشار نمر عفانه');
             basmaContainer.innerHTML = aishaHTML.replace(/عائشة عواد الحمد/g, 'باسمة نمر عفانه');
         }
@@ -537,7 +520,6 @@
             display.textContent = `${count} / ${max}`;
         }
 
-        // --- Quran Reader Functions ---
         const quranIndexDiv = document.getElementById('quran-index');
         const quranViewerDiv = document.getElementById('quran-viewer');
         const surahContentDiv = document.getElementById('surah-content');
@@ -591,26 +573,12 @@
             quranIndexContainer.style.display = 'block';
         }
 
-        // --- LOCATION & PRAYER TIMES ---
         let prayerTimesData = {};
         let nextPrayerInterval;
 
         function updateLocation() {
-            localStorage.removeItem('userLocation'); // Force re-prompt
-            const locationStatus = document.getElementById('location-status');
-            locationStatus.innerHTML = 'يرجى السماح بالوصول إلى موقعك...';
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const coords = { lat: position.coords.latitude, lon: position.coords.longitude };
-                    localStorage.setItem('userLocation', JSON.stringify(coords));
-                    getPrayerTimes(); // Re-fetch times with new location
-                },
-                (error) => {
-                    locationStatus.innerHTML = `فشل تحديد الموقع. يتم عرض مواقيت عمّان. <button onclick="updateLocation()">حاول مجدداً</button>`;
-                    fetchDataForCoords(31.9539, 35.9106); // Fallback to Amman
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
+            localStorage.removeItem('userLocation');
+            getPrayerTimes();
         }
 
         async function getPrayerTimes() {
@@ -618,10 +586,22 @@
             let coords = JSON.parse(localStorage.getItem('userLocation'));
             if (coords) {
                 locationStatus.innerHTML = `الموقع محدد تلقائياً. <button onclick="updateLocation()">تغيير الموقع</button>`;
-                fetchDataForCoords(coords.lat, coords.lon);
-            } else {
-                updateLocation();
+                return fetchDataForCoords(coords.lat, coords.lon);
             }
+            locationStatus.innerHTML = 'يرجى السماح بالوصول إلى موقعك...';
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    coords = { lat: position.coords.latitude, lon: position.coords.longitude };
+                    localStorage.setItem('userLocation', JSON.stringify(coords));
+                    locationStatus.innerHTML = `تم حفظ موقعك بنجاح. <button onclick="updateLocation()">تغيير</button>`;
+                    fetchDataForCoords(coords.lat, coords.lon);
+                },
+                (error) => {
+                    locationStatus.innerHTML = `فشل تحديد الموقع. يتم عرض مواقيت عمّان. <button onclick="updateLocation()">حاول مجدداً</button>`;
+                    fetchDataForCoords(31.9539, 35.9106);
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
         }
         
         async function fetchDataForCoords(lat, lon) {
@@ -650,17 +630,15 @@
         function startNextPrayerCountdown() {
             if(nextPrayerInterval) clearInterval(nextPrayerInterval);
             if(Object.keys(prayerTimesData).length === 0) return;
-
             const prayerOrder = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
             const prayerNamesArabic = { Fajr: 'الفجر', Dhuhr: 'الظهر', Asr: 'العصر', Maghrib: 'المغرب', Isha: 'العشاء' };
-            
             nextPrayerInterval = setInterval(() => {
                 const now = new Date();
                 let nextPrayerTime = null;
                 let nextPrayerName = '';
                 for(const prayer of prayerOrder) {
                     const [h, m] = prayerTimesData[prayer].split(':');
-                    const prayerDate = new Date();
+                    const prayerDate = new Date(now);
                     prayerDate.setHours(h, m, 0, 0);
                     if(prayerDate > now) {
                         nextPrayerTime = prayerDate;
@@ -670,7 +648,7 @@
                 }
                 if(!nextPrayerTime) {
                     const [h, m] = prayerTimesData.Fajr.split(':');
-                    nextPrayerTime = new Date();
+                    nextPrayerTime = new Date(now);
                     nextPrayerTime.setDate(now.getDate() + 1);
                     nextPrayerTime.setHours(h, m, 0, 0);
                     nextPrayerName = prayerNamesArabic.Fajr;
