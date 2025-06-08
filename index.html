@@ -9,6 +9,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="logoa.png" type="image/png">
     <link rel="apple-touch-icon" href="logoa.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <style>
         :root {
@@ -199,16 +200,14 @@
         #verse-of-the-day { border-top: 1px solid #eee; padding-top: 1.5rem; }
         #verse-of-the-day .verse-text { font-family: 'Amiri', serif; font-size: 1.4rem; margin-bottom: 0.5rem; font-style: italic; color: var(--secondary-color); }
         #verse-of-the-day .verse-surah { font-size: 1rem; color: #777; }
-        #location-status { text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee; font-size: 0.9rem; color: #888;}
-        #location-status button {
-            background: transparent; border: 1px solid var(--accent-color); color: var(--accent-color);
-            padding: 5px 10px; border-radius: 15px; cursor: pointer; font-family: var(--font-family);
-            margin-top: 5px;
-            transition: all 0.2s ease-in-out;
-        }
-        #location-status button:hover {
-            background: var(--accent-color);
-            color: var(--white-color);
+        #location-info-container { 
+            text-align: center; 
+            margin-top: 1.5rem; 
+            padding-top: 1rem; 
+            border-top: 1px solid #eee; 
+            font-size: 0.9rem; 
+            color: #888;
+            min-height: 20px; /* Added to prevent layout shift */
         }
 
         .content-section {
@@ -398,7 +397,7 @@
             background: var(--qibla-yellow); color: black; padding: 10px 20px;
             border-radius: 20px; border: none; cursor: pointer; margin-top: 1rem; font-weight: bold;
         }
-        
+ 
         .site-footer {
             text-align: center;
             padding: 2rem 1rem 1rem 1rem;
@@ -462,7 +461,9 @@
                     <div class="prayer-item" id="prayer-Maghrib"><div class="prayer-name">المغرب</div><div class="prayer-time" id="maghrib-time">--:--</div></div>
                     <div class="prayer-item" id="prayer-Isha"><div class="prayer-name">العشاء</div><div class="prayer-time" id="isha-time">--:--</div></div>
                 </div>
-                <div id="location-status"></div>
+                <div id="location-info-container">
+                    <div id="location-status">جاري تحديد موقعك...</div>
+                    </div>
             </div>
             <div class="card home-dashboard">
                 <h3>⏳ الصلاة القادمة بعد</h3>
@@ -478,7 +479,7 @@
         <div id="qibla-page" class="page">
              <div class="card">
                 <div class="qibla-container-new">
-                    <div class="qibla-header-text">اتجاه القبلة في <span id="qibla-city">عمان</span></div>
+                    <div class="qibla-header-text">اتجاه القبلة في <span id="qibla-city">جاري التحديد...</span></div>
                      <div id="qibla-permission-container" class="status-text"></div>
                     <div class="compass-main">
                         <div class="static-arrow-container"></div>
@@ -582,12 +583,11 @@ const KABA_LAT = 21.4225;
 const KABA_LON = 39.8262;
 let prayerTimesData = {};
 let nextPrayerInterval;
-let apiDateInfo = {};
 let orientationHandler = null; // To control the compass listener
 
 // --- 2. INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    setPrayerTimesFromOfficialCalendar();
+    initPrayerTimesBasedOnLocation();
     document.getElementById('current-year').textContent = new Date().getFullYear();
     setTimeout(() => {
         populateAllDynamicContent();
@@ -747,7 +747,7 @@ function populateDeceasedDuas() {
         "اللهم إنه عبدك وابن عبدك، خرج من الدنيا، وسعتها، ومحبوبيه، وأحبائه فيها، إلى ظلمة القبر، وما هو لاقيه.",
         "اللهم عامله بما أنت أهله، ولا تعامله بما هو أهله.",
         "اللهم اجزه عن الإحسان إحساناً، وعن الإساءة عفواً وغفراناً.",
-        "اللهم إن كان محسناً فزد من حسناته، وإن كان مسيئاً فتجاوز عن سيئاته.",
+        "الل اللهم إن كان محسناً فزد من حسناته، وإن كان مسيئاً فتجاوز عن سيئاته.",
         "اللهم آنسه في وحدته، وفي وحشته، وفي غربته.",
         "اللهم أنزله منزلاً مباركاً، وأنت خير المنزلين.",
         "اللهم أنزله منازل الصديقين، والشهداء، والصالحين، وحسن أولئك رفيقاً.",
@@ -765,7 +765,7 @@ function populateDeceasedDuas() {
         "اللهم اجعل عن يمينه نوراً، حتّى تبعثه آمناً مطمئنّاً في نورٍ من نورك.",
         "اللهمّ انظر إليه نظرة رضا، فإنّ من تنظُر إليه نظرة رضاً لا تعذّبه أبداً.",
         "اللهمّ أسكنه فسيح الجنان، واغفر له يا رحمن، وارحمه يا رحيم، وتجاوز عمّا تعلم يا عليم.",
-        "اللهمّ اعف عنه، فإنّك القائل 'ويعفو عن كثير'.",
+        "الل اللهمّ اعف عنه، فإنّك القائل 'ويعفو عن كثير'.",
         "اللهمّ إنّه جاء ببابك، وأناخ بجنابك، فَجُد عليه بعفوك، وإكرامك، وجود إحسانك.",
         "اللهمّ إنّ رحمتك وسعت كلّ شيء، فارحمه رحمةً تطمئنّ بها نفسه، وتقرّ بها عينه."
     ];
@@ -791,7 +791,7 @@ function populateDeceasedDuas() {
         "اللهم اجعل عن يمينها نوراً، حتّى تبعثها آمنةً مطمئنّةً في نورٍ من نورك.",
         "اللهمّ انظر إليها نظرة رضا، فإنّ من تنظُر إليه نظرة رضاً لا تعذّبه أبداً.",
         "اللهمّ أسكنها فسيح الجنان، واغفر لها يا رحمن، وارحمها يا رحيم، وتجاوز عمّا تعلم يا عليم.",
-        "اللهمّ اعف عنها، فإنّك القائل 'ويعفو عن كثير'.",
+        "الل اللهمّ اعف عنها، فإنّك القائل 'ويعفو عن كثير'.",
         "اللهمّ إنّها جاءت ببابك، وأناخت بجنابك، فَجُد عليها بعفوك، وإكرامك، وجود إحسانك.",
         "اللهمّ إنّ رحمتك وسعت كلّ شيء، فارحمها رحمةً تطمئنّ بها نفسها، وتقرّ بها عينها."
     ];
@@ -853,34 +853,78 @@ function populateGeneralDuas() {
 }
 
 
-// --- 5. PRAYER TIMES ---
-function setPrayerTimesFromOfficialCalendar() {
+// --- 5. PRAYER TIMES (REFACTORED) ---
+
+function initPrayerTimesBasedOnLocation() {
     const locationStatus = document.getElementById('location-status');
-    locationStatus.innerHTML = "مواقيت الصلاة حسب تقويم وزارة الأوقاف الأردنية لمدينة <strong>عمان</strong>";
-    // This calendar should be updated periodically from the official source.
-    const officialCalendar = {
-        "06-07": { "Fajr": "03:50", "Sunrise": "05:23", "Dhuhr": "12:36", "Asr": "16:16", "Maghrib": "19:48", "Isha": "21:21" },
-        "06-08": { "Fajr": "03:50", "Sunrise": "05:23", "Dhuhr": "12:36", "Asr": "16:16", "Maghrib": "19:48", "Isha": "21:21" },
-        "06-09": { "Fajr": "03:50", "Sunrise": "05:23", "Dhuhr": "12:36", "Asr": "16:17", "Maghrib": "19:49", "Isha": "21:22" },
-        "06-10": { "Fajr": "03:50", "Sunrise": "05:23", "Dhuhr": "12:36", "Asr": "16:17", "Maghrib": "19:49", "Isha": "21:22" },
-        "06-11": { "Fajr": "03:50", "Sunrise": "05:23", "Dhuhr": "12:36", "Asr": "16:17", "Maghrib": "19:50", "Isha": "21:23" },
-        "06-12": { "Fajr": "03:49", "Sunrise": "05:23", "Dhuhr": "12:37", "Asr": "16:17", "Maghrib": "19:50", "Isha": "21:23" },
-        "06-13": { "Fajr": "03:49", "Sunrise": "05:23", "Dhuhr": "12:37", "Asr": "16:17", "Maghrib": "19:50", "Isha": "21:24" },
-        "06-14": { "Fajr": "03:49", "Sunrise": "05:23", "Dhuhr": "12:37", "Asr": "16:18", "Maghrib": "19:51", "Isha": "21:24" },
-        "06-15": { "Fajr": "03:49", "Sunrise": "05:23", "Dhuhr": "12:37", "Asr": "16:18", "Maghrib": "19:51", "Isha": "21:25" },
-        "06-16": { "Fajr": "03:49", "Sunrise": "05:23", "Dhuhr": "12:37", "Asr": "16:18", "Maghrib": "19:51", "Isha": "21:25" }
-    };
-    const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const todayKey = `${month}-${day}`;
-    // Use today's times, or fallback to the first available day in the calendar
-    let todaysTimes = officialCalendar[todayKey] || officialCalendar[Object.keys(officialCalendar)[0]];
-    prayerTimesData = { ...todaysTimes };
-    const year = today.getFullYear();
-    apiDateInfo = { readableDate: `${year}-${month}-${day}`, timezone: "Asia/Amman" };
-    displayPrayerTimes(prayerTimesData);
-    startNextPrayerCountdown();
+    locationStatus.innerHTML = "جاري تحديد موقعك... <br> (تأكد من تفعيل الموقع في جهازك/متصفحك)";
+    
+    const defaultLatitude = 31.9539; // Amman latitude
+    const defaultLongitude = 35.9106; // Amman longitude
+    const defaultCity = "عمان، الأردن (افتراضي)";
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                fetchPrayerTimes(position.coords.latitude, position.coords.longitude);
+                updateLocationInfo(position.coords.latitude, position.coords.longitude);
+            },
+            (error) => {
+                console.error('Error getting location:', error);
+                locationStatus.innerHTML = `لا يمكن تحديد موقعك. <br> عرض مواقيت ${defaultCity}`;
+                fetchPrayerTimes(defaultLatitude, defaultLongitude);
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 600000 }
+        );
+    } else {
+        console.warn('Geolocation is not supported by this browser.');
+        locationStatus.innerHTML = `خدمة تحديد الموقع غير مدعومة. <br> عرض مواقيت ${defaultCity}`;
+        fetchPrayerTimes(defaultLatitude, defaultLongitude);
+    }
+}
+
+async function fetchPrayerTimes(latitude, longitude) {
+    // Method is hardcoded to 3 (Muslim World League) for simplicity and reliability
+    const method = 3; 
+    try {
+        const response = await fetch(
+            `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=${method}`
+        );
+        const data = await response.json();
+        
+        if (data.code === 200 && data.status === "OK") {
+            prayerTimesData = data.data.timings;
+            displayPrayerTimes(prayerTimesData);
+            startNextPrayerCountdown(prayerTimesData); // Pass data directly
+        } else {
+            document.getElementById('location-status').innerHTML += '<br> (خطأ في جلب مواقيت الصلاة)';
+        }
+    } catch (error) {
+        console.error('Error during fetchPrayerTimes:', error);
+        document.getElementById('location-status').innerHTML += '<br> (فشل الاتصال بخادم مواقيت الصلاة)';
+    }
+}
+
+async function updateLocationInfo(latitude, longitude) {
+    try {
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`
+        );
+        const data = await response.json();
+        let locationName = '';
+        if (data.address) {
+            locationName = data.address.city || data.address.town || data.address.village || data.address.county || data.address.state || 'موقعك الحالي';
+            if (data.address.country) {
+                locationName += `, ${data.address.country}`;
+            }
+        } else {
+            locationName = 'موقعك الحالي';
+        }
+        document.getElementById('location-status').textContent = `مواقيت الصلاة في: ${locationName}`;
+    } catch (error) {
+        console.error('Error fetching location name:', error);
+        document.getElementById('location-status').textContent = 'مواقيت الصلاة لموقعك الحالي';
+    }
 }
 
 function displayPrayerTimes(times) {
@@ -889,56 +933,80 @@ function displayPrayerTimes(times) {
     document.getElementById('sunrise-time').textContent = formatTo12Hour(times.Sunrise);
     document.getElementById('dhuhr-time').textContent = formatTo12Hour(times.Dhuhr);
     document.getElementById('asr-time').textContent = formatTo12Hour(times.Asr);
-    document.getElementById('maghrib-time').textContent = formatTo12Hour(times.Maghrib);
+    document.getElementById('maghrib-time').textContent = formatTo12Hour(times.Maghrib); 
     document.getElementById('isha-time').textContent = formatTo12Hour(times.Isha);
 }
 
-function startNextPrayerCountdown() {
+// --- COUNTDOWN TIMER (REWRITTEN FOR RELIABILITY) ---
+function startNextPrayerCountdown(times) {
     if (nextPrayerInterval) clearInterval(nextPrayerInterval);
-    if (!prayerTimesData || Object.keys(prayerTimesData).length === 0 || !apiDateInfo.readableDate) return;
+    if (!times || Object.keys(times).length === 0) return;
+
     const prayerOrder = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    const prayerNamesArabic = {
+        Fajr: 'الفجر', Dhuhr: 'الظهر', Asr: 'العصر', Maghrib: 'المغرب', Isha: 'العشاء', Sunrise: 'الشروق'
+    };
+
     nextPrayerInterval = setInterval(() => {
         const now = new Date();
+        let nextPrayerName = null;
         let nextPrayerTime = null;
-        let nextPrayerName = '';
-        document.querySelectorAll('.prayer-item').forEach(item => item.classList.remove('next-prayer'));
-        const createPreciseDate = (timeStr) => new Date(`${apiDateInfo.readableDate} ${timeStr}:00`);
-        for (const prayer of prayerOrder) {
-            const prayerDate = createPreciseDate(prayerTimesData[prayer]);
-            if (prayerDate > now) {
-                nextPrayerTime = prayerDate;
-                nextPrayerName = prayer;
+
+        // 1. Create date objects for all of today's prayers
+        const todayPrayerTimes = prayerOrder.map(prayerName => {
+            const [hours, minutes] = times[prayerName].split(':');
+            const prayerDate = new Date();
+            prayerDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            return { name: prayerName, date: prayerDate };
+        });
+
+        // 2. Find the first prayer that is in the future
+        for (const prayer of todayPrayerTimes) {
+            if (prayer.date > now) {
+                nextPrayerName = prayer.name;
+                nextPrayerTime = prayer.date;
                 break;
             }
         }
+
+        // 3. If all prayers have passed, the next prayer is Fajr tomorrow
         if (!nextPrayerTime) {
-            let tomorrow = new Date(createPreciseDate(prayerTimesData.Fajr));
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            nextPrayerTime = tomorrow;
             nextPrayerName = 'Fajr';
+            const [hours, minutes] = times.Fajr.split(':');
+            nextPrayerTime = new Date();
+            nextPrayerTime.setDate(nextPrayerTime.getDate() + 1); // Move to tomorrow
+            nextPrayerTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
         }
+
+        // 4. Update UI (highlighting and countdown text)
+        document.querySelectorAll('.prayer-item').forEach(item => item.classList.remove('next-prayer'));
         const nextPrayerElement = document.getElementById(`prayer-${nextPrayerName}`);
-        if(nextPrayerElement) nextPrayerElement.classList.add('next-prayer');
-        const diff = nextPrayerTime - now;
-        if (diff > 0) {
-            const hours = Math.floor(diff / 3600000);
-            const minutes = Math.floor((diff % 3600000) / 60000);
-            const seconds = Math.floor((diff % 60000) / 1000);
-            document.getElementById('next-prayer-countdown').textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        } else {
-            document.getElementById('next-prayer-countdown').textContent = 'حان الآن وقت الصلاة';
+        if(nextPrayerElement) {
+            nextPrayerElement.classList.add('next-prayer');
         }
+
+        const diff = nextPrayerTime - now;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        document.getElementById('next-prayer-countdown').textContent = 
+            `${prayerNamesArabic[nextPrayerName]} بعد ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
     }, 1000);
 }
+
 
 function formatTo12Hour(time) {
     if (!time || typeof time !== 'string') return '--:--';
     const [hourStr, minuteStr] = time.split(':');
     let hour = parseInt(hourStr, 10);
-    const suffix = hour >= 12 ? 'م' : 'ص';
-    hour = ((hour + 11) % 12 + 1);
+    const suffix = hour >= 12 ? 'مساءً' : 'صباحًا';
+    hour = hour % 12;
+    hour = hour === 0 ? 12 : hour; // Convert 0 to 12 for 12-hour format
     return `${hour.toString().padStart(2, '0')}:${minuteStr} ${suffix}`;
 }
+
 
 // --- 6. QIBLA ---
 function initNewQibla() {
@@ -946,53 +1014,62 @@ function initNewQibla() {
     const statusText = document.getElementById('qibla-status-new');
     const compassDial = document.getElementById('compass-dial-new');
     const kaabaMarker = document.getElementById('kaaba-marker-new');
+    const qiblaCitySpan = document.getElementById('qibla-city');
+
     statusText.textContent = '';
     permissionContainer.textContent = '';
+    qiblaCitySpan.textContent = 'جاري التحديد...';
 
-    const locationSuccess = (position) => {
+    const qiblaLocationSuccess = async (position) => {
         const { latitude, longitude } = position.coords;
-        // You can use a reverse geocoding API to get the city name from lat/lon if needed
-        // For now, it defaults to 'عمان' from the HTML.
         const qiblaBearing = calculateQiblaBearing(latitude, longitude);
         
-        // Position Kaaba marker on the dial
-        const radius = compassDial.offsetWidth / 2;
-        const markerOffset = kaabaMarker.offsetWidth / 2;
-        const angleRad = (qiblaBearing - 90) * (Math.PI / 180); // Adjust by -90 because 0 degrees is 'up'
-        const y = radius * Math.sin(angleRad);
-        const x = radius * Math.cos(angleRad);
-        kaabaMarker.style.transform = `translate(${x - markerOffset}px, ${y - markerOffset}px)`;
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`);
+            const data = await response.json();
+            if (data.address) {
+                const city = data.address.city || data.address.town || data.address.village || 'موقعك الحالي';
+                qiblaCitySpan.textContent = city;
+            } else {
+                qiblaCitySpan.textContent = 'موقعك الحالي';
+            }
+        } catch (error) {
+            console.error('Error fetching Qibla location name:', error);
+            qiblaCitySpan.textContent = 'موقعك الحالي (فشل عرض الاسم)';
+        }
+
+        kaabaMarker.style.transform = `rotate(${qiblaBearing}deg)`;
 
         let lastVibrationTime = 0;
         
         orientationHandler = (event) => {
-            // Use 'webkitCompassHeading' for iOS, 'alpha' as fallback
-            let heading = event.alpha;
+            let heading = event.alpha; // For Android
             if (event.webkitCompassHeading !== undefined && event.webkitCompassHeading !== null) {
-                heading = event.webkitCompassHeading;
+                heading = event.webkitCompassHeading; // For iOS
             }
-            if (heading === null) return;
+            if (heading === null || heading === undefined) {
+                statusText.textContent = 'البوصلة غير متوفرة أو تحتاج لمعايرة (حرك الجهاز في شكل 8)';
+                compassDial.style.transform = `rotate(0deg)`;
+                return;
+            }
 
-            // Rotate the compass dial to point North
             compassDial.style.transform = `rotate(${-heading}deg)`;
             
-            // Check for alignment
-            const difference = Math.abs(heading - qiblaBearing);
-            const isAligned = Math.min(difference, 360 - difference) < 3; // 3-degree tolerance
+            const currentQiblaAngleOnDial = (qiblaBearing - heading + 360) % 360;
+            const isAligned = Math.min(currentQiblaAngleOnDial, 360 - currentQiblaAngleOnDial) < 3; // 3-degree tolerance
 
             if (isAligned) {
                 statusText.textContent = 'الجهاز يشير إلى اتجاه القبلة';
                 const now = Date.now();
-                if (navigator.vibrate && now - lastVibrationTime > 2000) { // Vibrate every 2 seconds max
+                if (navigator.vibrate && now - lastVibrationTime > 2000) {
                     navigator.vibrate(100);
                     lastVibrationTime = now;
                 }
             } else {
-                statusText.textContent = 'قم بتدوير الجهاز لمحاذاة رمز الكعبة مع السهم';
+                statusText.textContent = 'قم بتدوير الجهاز حتى تتطابق الكعبة مع الأعلى';
             }
         };
 
-        // Handle permissions for iOS 13+
         if ('DeviceOrientationEvent' in window && typeof DeviceOrientationEvent.requestPermission === 'function') {
             permissionContainer.innerHTML = '<button id="qibla-permission-btn">تفعيل البوصلة</button>';
             document.getElementById('qibla-permission-btn').onclick = () => {
@@ -1000,6 +1077,7 @@ function initNewQibla() {
                     if (permissionState === 'granted') {
                         permissionContainer.innerHTML = '';
                         window.addEventListener('deviceorientation', orientationHandler);
+                        statusText.textContent = 'البوصلة مفعلة، حرك الجهاز.';
                     } else {
                         statusText.textContent = 'تم رفض إذن استخدام البوصلة.';
                     }
@@ -1007,15 +1085,17 @@ function initNewQibla() {
             };
         } else {
              window.addEventListener('deviceorientation', orientationHandler);
+             statusText.textContent = 'البوصلة مفعلة، حرك الجهاز.';
         }
     };
 
-    const locationError = () => {
-        statusText.textContent = 'لا يمكن تحديد موقعك لتحديد اتجاه القبلة.';
+    const qiblaLocationError = () => {
+        statusText.textContent = 'لا يمكن تحديد موقعك لتحديد اتجاه القبلة. تأكد من تفعيل الموقع في جهازك.';
+        qiblaCitySpan.textContent = 'غير معروف';
     };
 
     permissionContainer.textContent = 'جاري طلب أذونات الموقع...';
-    navigator.geolocation.getCurrentPosition(locationSuccess, locationError, { enableHighAccuracy: true });
+    navigator.geolocation.getCurrentPosition(qiblaLocationSuccess, qiblaLocationError, { enableHighAccuracy: true });
 }
 
 function stopQibla() {
@@ -1027,16 +1107,20 @@ function stopQibla() {
 
 function calculateQiblaBearing(lat1, lon1) {
     const toRad = (deg) => deg * Math.PI / 180;
+    const toDeg = (rad) => rad * 180 / Math.PI;
+
     lat1 = toRad(lat1);
     lon1 = toRad(lon1);
     const lat2 = toRad(KABA_LAT);
     const lon2 = toRad(KABA_LON);
-    const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
-    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-    let brng = Math.atan2(y, x);
-    brng = brng * 180 / Math.PI;
-    return (brng + 360) % 360;
+
+    const deltaLon = lon2 - lon1;
+    const y = Math.sin(deltaLon) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+    let bearing = toDeg(Math.atan2(y, x));
+    return (bearing + 360) % 360;
 }
+
 
 // --- 7. QURAN READER & OTHERS ---
 async function loadQuranIndex() {
